@@ -1,5 +1,50 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto:300);
 
+/*body {*/
+/*    background: url("../images/const/bg.png") 0 0 repeat;*/
+/*}*/
+
+.splash{
+    /*cursor: pointer;*/
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    height: 100%;
+    width: 100%;
+    transform: translate(-50%, -50%);
+    background: url("../images/const/bg.png") 0 0 repeat;
+    transition: all ease-in-out 600ms;
+}
+
+.button {
+    background: none!important;
+    border: none;
+    padding: 0!important;
+    font-family: arial, sans-serif;
+    color: white;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.navbar{
+    display: none;
+}
+
+.hidden{
+    transition: 0.5s;
+    display: none;
+}
+
+.splash-header{
+    height: 100%;
+    color: white;
+    font-family: consolas, serif;
+    font-size: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .auth-page {
     width: 360px;
     padding: 8% 0 0;
@@ -88,4 +133,21 @@
 }
 .container .info span .fa {
     color: #EF3B3A;
+}
+
+.productArea{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+.productElement{
+    margin-top: 20px
+}
+
+.productInfoImage{
+    width: 50%;
+    height: auto;
+    margin-left: 25%;
+    margin-right: 25%;
 }

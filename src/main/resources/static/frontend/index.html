@@ -14,7 +14,8 @@
     <link rel="stylesheet" href="index.css">
 </head>
 <body>
-<div class="auth-page" id="auth-page">
+<div class="splash" id="splash">
+<div class="auth-page splash-header" id="auth-page">
     <div class="form">
         <form class="register-form" id="register-form">
             <input type="text" required placeholder="name" name="name" id="registrationName"/>
@@ -30,6 +31,38 @@
             <p class="message" id="createAccount">Not registered? <a href="#">Create an account</a></p>
         </form>
     </div>
+</div>
+</div>
+<nav class="navbar navbar-dark bg-dark" id="navbar">
+    <a class="navbar-brand">Online-Shop</a>
+    <div class="userBtn">
+        <button class="userProfile button" id="userProfile"></button>
+        <button class="logOut button" id="logout">logOut</button>
+    </div>
+</nav>
+<div class="page" id="page">
+<div class="container-lg">
+    <form class="form-inline d-flex" id="searching-form">
+        <input class="form-control mr-sm-2" type="text" placeholder="Name" aria-label="Search" name="name">
+        <input class="form-control mr-sm-2" type="number" placeholder="Price" aria-label="Search" name="price" step="any">
+        <select name="category" id="option" class="option">
+            <option>Any</option>
+            <option>Computers</option>
+            <option>Smartphones</option>
+            <option>Tablets</option>
+            <option>TVs</option>
+            <option>Cameras</option>
+            <option>Game Consoles</option>
+            <option>Laptops</option>
+            <option>Smartwatches</option>
+            <option>Headphones</option>
+            <option>Printers</option>
+            <option>Speakers</option>
+        </select>
+        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+    </form>
+    <div class="productArea" id="productArea"></div>
+</div>
 </div>
 </body>
 <script language="JavaScript" src="index.js"></script>
