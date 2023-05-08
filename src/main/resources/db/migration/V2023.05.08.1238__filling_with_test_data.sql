@@ -4,7 +4,7 @@ VALUES ('MacBook Pro', '/images/MacBookPro.jpg', 10, 'The MacBook Pro is a line 
         'MacBook Air, and is available in 13-inch and 16-inch screen sizes. A 14-inch version was added in October ' ||
         '2021. The MacBook Pro is designed for professionals who need a powerful and portable computer for tasks ' ||
         'such as video editing, graphic design, and software development.', 1299, 1, 1),
-       ('iPhone 13 Pro Max', '/images/iPhone13ProMax.jpg', 20, 'The iPhone 13 Pro Max is a smartphone designed and marketed by Apple Inc. ' ||
+       ('iPhone 13 Pro Max', '/images/IPhone13ProMax.jpg', 20, 'The iPhone 13 Pro Max is a smartphone designed and marketed by Apple Inc. ' ||
         'It is the larger version of the iPhone 13 Pro, with a 6.7-inch Super Retina XDR display. The phone features ' ||
         'a triple-lens rear camera system with 12-megapixel Ultra Wide, Wide, and Telephoto cameras, as well as the ' ||
         'ability to capture ProRAW images. It is powered by the A15 Bionic chip and is available with up to 1TB of ' ||
