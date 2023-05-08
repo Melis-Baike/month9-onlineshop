@@ -28,12 +28,6 @@ public class ProductController {
         return ResponseEntity.ok(page);
     }
 
-//    @GetMapping("/{productID}")
-//    public ResponseEntity<ProductDTO> getProductInfo(@PathVariable Long productID){
-//        System.out.println(productID);
-//        return ResponseEntity.ok(productService.getProductInfoId(productID));
-//    }
-
     @GetMapping("/{productName}")
     public ResponseEntity<ProductDTO> getProductInfoByName(@PathVariable String productName){
         System.out.println(productName);
