@@ -189,7 +189,3 @@ VALUES  ('Apple iPhone 12', '/images/Iphone12.jpg', 50,
          'Additionally, it is equipped with a powerful battery that provides up to 15 hours of battery life on a ' ||
          'single charge. The laptop also supports touch input technology and has a built-in fingerprint scanner ' ||
          'for more secure access to the device.', 1299, 7, 1);
-INSERT INTO users(name, email, password, enabled)
-VALUES ('Test', 'test@gmail.com', 'test', true);
-INSERT INTO reviews (text, rating, user_id, product_id)
-VALUES ('Good product!', 4.8, 1, 1);
