@@ -1,14 +1,16 @@
 package com.example.onlineshop.DTO;
 
-import com.example.onlineshop.entity.Role;
 import com.example.onlineshop.entity.User;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 @Builder
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class UserDTO {
     public static UserDTO from(User user){
         return UserDTO.builder()
@@ -16,7 +18,7 @@ public class UserDTO {
                 .name(user.getName())
                 .email(user.getEmail())
                 .enabled(user.isEnabled())
-                .roles(user.getRoles())
+                .roles(user.getRoles().stream().map(RoleDTO::from).collect(Collectors.toList()))
                 .build();
     }
 
@@ -24,5 +26,5 @@ public class UserDTO {
     private String name;
     private String email;
     private boolean enabled;
-    private List<Role> roles;
+    private List<RoleDTO> roles;
 }

@@ -3,11 +3,13 @@ package com.example.onlineshop.DTO;
 import com.example.onlineshop.entity.Brand;
 import com.example.onlineshop.entity.Category;
 import com.example.onlineshop.entity.Product;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Builder;
 import lombok.Data;
 
 @Data
 @Builder
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class ProductDTO {
     public static ProductDTO from(Product product){
         return ProductDTO.builder()
@@ -17,8 +19,8 @@ public class ProductDTO {
                 .quantity(product.getQuantity())
                 .description(product.getDescription())
                 .price(product.getPrice())
-                .category(product.getCategory())
-                .brand(product.getBrand())
+                .category(CategoryDTO.from(product.getCategory()))
+                .brand(BrandDTO.from(product.getBrand()))
                 .build();
     }
 
@@ -28,6 +30,6 @@ public class ProductDTO {
     private Long quantity;
     private String description;
     private Double price;
-    private Category category;
-    private Brand brand;
+    private CategoryDTO category;
+    private BrandDTO brand;
 }
