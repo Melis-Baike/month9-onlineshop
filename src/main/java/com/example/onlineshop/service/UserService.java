@@ -45,7 +45,6 @@ public class UserService {
     }
 
     public UserDTO login(Authentication authentication){
-        System.out.println(authentication.getName());
         User user = userRepository.findByEmail(authentication.getName()).get();
         return UserDTO.from(user);
     }

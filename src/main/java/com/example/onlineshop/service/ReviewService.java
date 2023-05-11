@@ -25,7 +25,6 @@ public class ReviewService {
         Pageable pageable = PageRequest.of(0, 10, sort);
         Product product = productRepository.findByName(productName).get();
         Page<Review> page = reviewRepository.findAllByProduct(product, pageable);
-        System.out.println(page);
         return Optional.of(page.map(ReviewDTO::from));
     }
 }
