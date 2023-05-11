@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.NotBlank;
 import java.util.Optional;
 
 @RestController
@@ -24,19 +25,16 @@ public class ProductController {
         Optional<String> price = Optional.ofNullable(request.getHeader("Price"));
         String categoryName = request.getHeader("Category");
         Optional<Page<ProductDTO>> page = productService.getProductList(name, price, categoryName);
-        System.out.println(page);
         return ResponseEntity.ok(page);
     }
 
     @GetMapping("/{productName}")
-    public ResponseEntity<ProductDTO> getProductInfoByName(@PathVariable String productName){
-        System.out.println(productName);
+    public ResponseEntity<ProductDTO> getProductInfoByName(@PathVariable @NotBlank String productName){
         return ResponseEntity.ok(productService.getProductInfoByName(productName));
     }
 
     @GetMapping("/{productName}/reviews")
-    public ResponseEntity<Optional<Page<ReviewDTO>>> getProductsReviews(@PathVariable String productName){
-        System.out.println(productName);
+    public ResponseEntity<Optional<Page<ReviewDTO>>> getProductsReviews(@PathVariable @NotBlank String productName){
         return ResponseEntity.ok(reviewService.getReviewList(productName));
     }
 }
