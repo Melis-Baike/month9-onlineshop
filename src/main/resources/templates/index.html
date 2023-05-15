@@ -30,6 +30,7 @@
         <button type="submit">Login</button>
         <p class="message" id="createAccount">Not registered? <a href="#">Create an account</a></p>
       </form>
+      <button class="signInWithoutAuth" id="signInWithoutAuth">Sign in without auth</button>
     </div>
   </div>
 </div>
@@ -46,7 +47,10 @@
   <div class="container-lg">
     <form class="form-inline d-flex" id="searching-form">
       <input class="form-control mr-sm-2" type="text" placeholder="Name" aria-label="Search" name="name">
-      <input class="form-control mr-sm-2" type="number" placeholder="Price" aria-label="Search" name="price" step="any">
+      <input type="number" id="min-price" name="min-price" min="0" step="1" placeholder="Min-Price">
+      <input type="number" id="max-price" name="max-price" min="0" step="1" placeholder="Max-Price">
+      <input type="number" id="quantity-field" name="quantity" min="0" placeholder="Quantity">
+      <input type="text" placeholder="Description" name="description">
       <select name="category" id="option" class="option">
         <option>Any</option>
         <option>Computers</option>
@@ -61,9 +65,22 @@
         <option>Printers</option>
         <option>Speakers</option>
       </select>
+      <select name="brand" id="brand" class="brand">
+        <option>Any</option>
+        <option>Apple</option>
+        <option>Samsung</option>
+        <option>Sony</option>
+        <option>Bose</option>
+        <option>Dell</option>
+        <option>LG</option>
+        <option>Canon</option>
+        <option>HP</option>
+        <option>Alienware</option>
+        <option>Sonos</option>
+      </select>
       <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
     </form>
-    <div class="productArea" id="productArea"></div>
+    <div class="productArea page0" id="productArea"></div>
   </div>
 </div>
 <div class="modal fade" id="basketModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
