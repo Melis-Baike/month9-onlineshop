@@ -79,7 +79,7 @@ CREATE TABLE IF NOT EXISTS basket_products (
     product_price FLOAT(8) NOT NULL,
     category_id BIGINT NOT NULL,
     brand_id BIGINT NOT NULL,
-    basket_id BIGINT NOT NULL,
+    basket_id BIGINT,
     CONSTRAINT fk_category
     FOREIGN KEY (category_id)
     REFERENCES categories (id)
