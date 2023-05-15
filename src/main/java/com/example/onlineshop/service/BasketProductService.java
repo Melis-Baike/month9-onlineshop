@@ -26,8 +26,6 @@ public class BasketProductService {
     public BasketProductDTO putInTheBasket(Authentication authentication, String productName, Long quantity){
         Product product = productRepository.findByName(productName).get();
         if(product.getQuantity() > quantity){
-            User user = userRepository.findByEmail(authentication.getName()).get();
-            Optional<Basket> optionalBasket = basketRepository.findByUser(user);
             product.setQuantity(product.getQuantity() - quantity);
             productRepository.setQuantityById(product.getQuantity(), product.getId());
             String name = product.getName();
@@ -42,19 +40,51 @@ public class BasketProductService {
                     .category(product.getCategory())
                     .brand(product.getBrand())
                     .build();
-            if(optionalBasket.isPresent()) {
-                basketProduct.setBasket(optionalBasket.get());
-            } else {
-                Basket basket = Basket.builder()
-                        .user(user)
-                        .build();
-                basketRepository.save(basket);
-                basketProduct.setBasket(basket);
+            if(authentication != null && !authentication.getName().isBlank()) {
+                User user = userRepository.findByEmail(authentication.getName()).get();
+                Optional<Basket> optionalBasket = basketRepository.findByUser(user);
+                if (optionalBasket.isPresent()) {
+                    basketProduct.setBasket(optionalBasket.get());
+                } else {
+                    Basket basket = Basket.builder()
+                            .user(user)
+                            .build();
+                    basketRepository.save(basket);
+                    basketProduct.setBasket(basket);
+                }
             }
             basketProductRepository.save(basketProduct);
             return BasketProductDTO.from(basketProduct);
         } else {
             return null;
         }
+    }
+
+    public BasketProductDTO changeQuantityOfProduct(String productName, Long basketProductId,
+                                                    Long previousQuantity, Long currentQuantity){
+        Product product = productRepository.findByName(productName).get();
+        BasketProduct basketProduct = basketProductRepository.findById(basketProductId).get();
+        long diff = currentQuantity - previousQuantity;
+        if(product.getQuantity() > currentQuantity){
+            product.setQuantity(product.getQuantity() - (diff));
+            productRepository.setQuantityById(product.getQuantity(), product.getId());
+            basketProduct.setProductQuantity(currentQuantity);
+            basketProductRepository.setProductQuantityById(basketProduct.getProductQuantity(), basketProduct.getId());
+            return BasketProductDTO.from(basketProduct);
+        } else {
+            return null;
+        }
+    }
+
+    public String deleteBasketProductElement(Authentication authentication, Long basketProductId){
+        if(authentication != null && !authentication.getName().isBlank()) {
+            User user = userRepository.findByEmail(authentication.getName()).get();
+            BasketProduct basketProduct = basketProductRepository.findById(basketProductId).get();
+            if (basketProduct.getBasket().getUser().equals(user)) {
+                basketProductRepository.deleteById(basketProductId);
+            }
+        }
+        basketProductRepository.deleteById(basketProductId);
+        return "You have successfully removed product";
     }
 }
