@@ -1,6 +1,5 @@
 package com.example.onlineshop.controller;
 
-import com.example.onlineshop.DTO.UserLoginDTO;
 import com.example.onlineshop.DTO.UserDTO;
 import com.example.onlineshop.DTO.UserRegistrationDTO;
 import com.example.onlineshop.service.UserService;
@@ -27,7 +26,7 @@ public class UserController {
     }
 
     @PostMapping("/auth")
-    public UserDTO login(Authentication authentication,@Valid @RequestBody UserLoginDTO userLoginDTO){
+    public UserDTO login(Authentication authentication){
         return userService.login(authentication);
     }
 }
