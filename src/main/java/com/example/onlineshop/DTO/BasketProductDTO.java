@@ -11,9 +11,8 @@ import lombok.Data;
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class BasketProductDTO {
     public static BasketProductDTO from(BasketProduct basketProduct){
-        return BasketProductDTO.builder()
+        BasketProductDTO basketProductDTO = BasketProductDTO.builder()
                 .id(basketProduct.getId())
-                .basket(BasketDTO.from(basketProduct.getBasket()))
                 .productName(basketProduct.getProductName())
                 .productImage(basketProduct.getProductImage())
                 .productQuantity(basketProduct.getProductQuantity())
@@ -22,6 +21,12 @@ public class BasketProductDTO {
                 .category(CategoryDTO.from(basketProduct.getCategory()))
                 .brand(BrandDTO.from(basketProduct.getBrand()))
                 .build();
+        if(basketProduct.getBasket() == null){
+            basketProductDTO.setBasket(null);
+        } else {
+            basketProductDTO.setBasket(BasketDTO.from(basketProduct.getBasket()));
+        }
+        return basketProductDTO;
     }
 
     private Long id;
