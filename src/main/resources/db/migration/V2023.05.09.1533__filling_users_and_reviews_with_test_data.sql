@@ -1,10 +1,10 @@
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
-INSERT INTO users(name, email, password, enabled)
-VALUES ('Andrey', 'andreyka@gmail.com', crypt('andrey123', gen_salt('bf')), true),
-       ('Bob', 'bobik@gmail.com', crypt('bobikk2', gen_salt('bf')), true),
-       ('Stephen', 'curry@gmail.com', crypt('stephcur7', gen_salt('bf')), true),
-       ('Natlus', 'makintoshev@gmail.com', crypt('pojo222', gen_salt('bf')), true),
-       ('Tomas', 'jerriev@gmail.com', crypt('tomandjerry', gen_salt('bf')), true);
+INSERT INTO users(name, email, password, enabled, authority_id)
+VALUES ('Andrey', 'andreyka@gmail.com', crypt('andrey123', gen_salt('bf')), true, 2),
+       ('Bob', 'bobik@gmail.com', crypt('bobikk2', gen_salt('bf')), true, 2),
+       ('Stephen', 'curry@gmail.com', crypt('stephcur7', gen_salt('bf')), true, 2),
+       ('Natlus', 'makintoshev@gmail.com', crypt('pojo222', gen_salt('bf')), true, 2),
+       ('Tomas', 'jerriev@gmail.com', crypt('tomandjerry', gen_salt('bf')), true, 2);
 INSERT INTO reviews (text, rating, user_id, product_id)
 VALUES ('Good product!', 4.8, 1, 1),
        ('I bought it 1 year ago and it has already broken...', 2.7, 1, 14),

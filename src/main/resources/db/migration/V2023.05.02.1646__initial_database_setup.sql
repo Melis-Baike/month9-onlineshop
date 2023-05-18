@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS products (
 );
 
 
-CREATE TABLE IF NOT EXISTS roles (
+CREATE TABLE IF NOT EXISTS authorities (
     id BIGSERIAL PRIMARY KEY NOT NULL,
     name TEXT NOT NULL
 );
@@ -41,24 +41,15 @@ CREATE TABLE IF NOT EXISTS users (
     name TEXT NOT NULL,
     email TEXT NOT NULL,
     password TEXT NOT NULL,
-    enabled BOOLEAN NOT NULL
-);
-
-CREATE TABLE IF NOT EXISTS users_roles (
-    id BIGSERIAL PRIMARY KEY NOT NULL,
-    user_id BIGINT NOT NULL,
-    role_id BIGINT NOT NULL,
-    CONSTRAINT fk_user
-    FOREIGN KEY (user_Id)
-    REFERENCES users (id)
-    ON UPDATE CASCADE
-    ON DELETE RESTRICT,
-    CONSTRAINT fk_role
-    FOREIGN KEY (role_id)
-    REFERENCES roles (id)
+    enabled BOOLEAN NOT NULL,
+    authority_id BIGINT NOT NULL,
+    CONSTRAINT fk_authority
+    FOREIGN KEY (authority_id)
+    REFERENCES authorities (id)
     ON UPDATE CASCADE
     ON DELETE RESTRICT
 );
+
 
 CREATE TABLE IF NOT EXISTS baskets (
     id BIGSERIAL PRIMARY KEY NOT NULL,
@@ -117,7 +108,7 @@ VALUES ('Computers'), ('Smartphones'), ('Tablets'), ('TVs'), ('Cameras'), ('Game
 INSERT INTO brands(name)
 VALUES ('Apple'),('Samsung'),('Sony'),('Bose'),('Dell'),('LG'),('Canon'),('HP'),('Alienware'),('Sonos');
 
-INSERT INTO roles(name)
+INSERT INTO authorities(name)
 VALUES ('ROLE_GUEST'),('ROLE_USER'),('ROLE_ADMIN');
 
 INSERT INTO products(name, image, quantity, description, price, category_id, brand_id)
