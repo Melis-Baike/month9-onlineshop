@@ -12,19 +12,10 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Builder
 @Data
-@Table(name = "users_roles")
-public class UserRole {
-
+@Table(name = "authorities")
+public class Authority {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
-
-    @ManyToOne
-    @JoinColumn(name = "role_id")
-    private Role role;
+    private String name;
 }
-
