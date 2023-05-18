@@ -5,9 +5,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Builder;
 import lombok.Data;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Data
 @Builder
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
@@ -18,7 +15,7 @@ public class UserDTO {
                 .name(user.getName())
                 .email(user.getEmail())
                 .enabled(user.isEnabled())
-                .roles(user.getRoles().stream().map(RoleDTO::from).collect(Collectors.toList()))
+                .authorityDTO(AuthorityDTO.from(user.getAuthority()))
                 .build();
     }
 
@@ -26,5 +23,5 @@ public class UserDTO {
     private String name;
     private String email;
     private boolean enabled;
-    private List<RoleDTO> roles;
+    private AuthorityDTO authorityDTO;
 }

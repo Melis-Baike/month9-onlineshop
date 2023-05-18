@@ -1,25 +1,27 @@
 package com.example.onlineshop.DTO;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 public class UserRegistrationDTO {
-    @NotBlank
+    @NotBlank(message = "The name can't be empty")
+    @Size(min=4, max=24, message = "Length must be >= 4 and <= 24")
+    @Pattern(regexp = "^[^\\d\\s]+$", message = "Should contain only letters")
     private String name;
-    @Email
-    @NotBlank
+    @Email(message = "Enter your email")
+    @NotBlank(message = "The email can't be empty")
     private String email;
-    @NotBlank
-    @Size(min = 8)
+    @NotBlank(message = "The password can't be empty")
+    @Size(min = 4, message = "The password must have at least 8 characters")
     private String password;
 }
