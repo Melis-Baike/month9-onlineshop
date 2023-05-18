@@ -7,7 +7,7 @@
     height: 100%;
     width: 100%;
     transform: translate(-50%, -50%);
-    background: url("../images/const/bg.png") 0 0 repeat;
+    background: url("../../utilsImage/bgimg.png") 0 0 repeat;
     transition: all ease-in-out 600ms;
 }
 
@@ -21,9 +21,9 @@
     cursor: pointer;
 }
 
-.navbar{
-    display: none;
-}
+/*.navbar{*/
+/*    display: none;*/
+/*}*/
 
 .hidden{
     transition: 0.5s;
@@ -144,10 +144,6 @@
     height: auto;
     margin-left: 25%;
     margin-right: 25%;
-}
-
-.page{
-    display: none;
 }
 
 .cardBtn{
