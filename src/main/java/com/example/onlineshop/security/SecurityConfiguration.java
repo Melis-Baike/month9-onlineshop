@@ -4,17 +4,17 @@ import com.google.common.collect.ImmutableList;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.AuthenticationEntryPoint;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import org.springframework.security.web.csrf.CsrfTokenRepository;
+import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -34,27 +34,57 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(final HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/").permitAll()
+                .antMatchers("/users/auth").fullyAuthenticated()
+                .antMatchers("/").fullyAuthenticated()
+                .antMatchers("/users/*").permitAll()
+                .antMatchers("/users/*/*").permitAll()
+                .antMatchers("/users/register/post").permitAll()
                 .antMatchers("/basket/**").permitAll()
                 .antMatchers("/products/*/*").permitAll()
                 .antMatchers("/products/*").permitAll()
-                .antMatchers("/static/frontend/**").permitAll()
-                .antMatchers("/static/images/**").permitAll()
+                .antMatchers("/static/**/**").permitAll()
                 .antMatchers( "/users/registration").permitAll()
                 .anyRequest().authenticated();
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.formLogin().disable();
-        http.logout().disable();
-        http.httpBasic()
-                .authenticationEntryPoint(new AuthenticationEntryPoint(){ //<< implementing this interface
-                    @Override
-                    public void commence(HttpServletRequest request, HttpServletResponse response,
-                                         AuthenticationException authException) throws IOException, ServletException {
-                        response.sendError(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.getReasonPhrase());
-                    }
-                });
+
+        http.formLogin()
+                .loginPage("/users/login")
+                .successHandler(customSuccessHandler())
+                .loginProcessingUrl("/users/auth")
+                .failureUrl("/users/unsuccessfulLoginEntry")
+                .usernameParameter("email")
+                .permitAll();
+
+
+        http.logout().logoutUrl("/users/logout")
+                .logoutSuccessHandler(new CustomLogoutSuccessHandler())
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID")
+                .permitAll();
         http.cors().configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues());
-        http.csrf().disable();
+        http.csrf().csrfTokenRepository(new HttpSessionCsrfTokenRepository());
+        http.httpBasic().disable();
+    }
+
+    @Bean
+    public AuthenticationSuccessHandler customSuccessHandler() {
+        return new CustomSuccessHandler();
+    }
+
+
+    private static class CustomSuccessHandler implements AuthenticationSuccessHandler {
+
+        @Override
+        public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+            response.sendRedirect("/users/auth");
+        }
+    }
+
+    private static class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
+
+        @Override
+        public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+            response.sendRedirect("/login?logout");
+        }
     }
 
 
@@ -84,17 +114,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public AuthenticationFailureHandler authenticationFailureHandler() {
-        return new CustomAuthenticationFailureHandler();
-    }
-
-    private static class CustomAuthenticationFailureHandler implements AuthenticationFailureHandler {
-        @Override
-        public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
-                                            AuthenticationException exception) throws IOException, ServletException {
-            response.setContentType("application/json;charset=UTF-8");
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("{\"error\": \"Invalid username or password\"}");
-        }
+    public CsrfTokenRepository csrfTokenRepository() {
+        return new HttpSessionCsrfTokenRepository();
     }
 }
