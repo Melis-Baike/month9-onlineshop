@@ -1,55 +1,13 @@
-const authPage = document.getElementById('auth-page');
-const registerForm = document.getElementById('register-form');
-const loginForm = document.getElementById('login-form');
-const splashArea = document.getElementById('splash');
-const navbar = document.getElementById('navbar');
 const searchingForm = document.getElementById('searching-form');
 const productArea = document.getElementById('productArea');
 const page = document.getElementById('page');
 const main = document.getElementById('navbar-brand');
-const logout = document.getElementById('logout');
 const basket = document.getElementById('basket');
 const productQuantityModal = document.getElementById('productQuantityModal');
 const saveBtn = document.getElementsByClassName('saveBtn')[0];
-const signInWithoutAuthBtn = document.getElementById('signInWithoutAuth');
+const csrfToken = document.querySelector('meta[name="_csrf_token"]').getAttribute('content');
+const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
 
-$('.message a').click(function(){
-    $('form').animate({height: "toggle", opacity: "toggle"}, "slow");
-});
-
-registerForm.addEventListener('submit', registrationHandler)
-async function registrationHandler(e){
-    e.preventDefault();
-    const form = e.target;
-    const data = new FormData(form);
-    const json = parseJson(data);
-    axios.post('http://127.0.0.1:8080/users/registration', json, {
-        headers : {
-            'Content-Type':'application/json'
-        }
-    }).then(function (response){
-        console.log(response);
-    }).catch(function (error){
-        console.log(error);
-    });
-}
-
-loginForm.addEventListener('submit', loginHandler)
-function loginHandler(e){
-    e.preventDefault();
-    const form = e.target;
-    const data = new FormData(form);
-    const user = Object.fromEntries(data);
-    saveUser(user);
-    axios.post('http://127.0.0.1:8080/users/auth', user, updateOptions({}))
-        .then(function (response){
-            console.log(response);
-            hideLoginPage();
-        }).catch(function (error) {
-        console.log(error);
-        localStorage.clear();
-    });
-}
 
 function updateOptions(options) {
     const update = { ...options };
@@ -68,46 +26,6 @@ function restoreUser() {
     return JSON.parse(userAsJSON);
 }
 
-function saveUser(user) {
-    const userAsJSON = JSON.stringify(user)
-    localStorage.setItem('user', userAsJSON);
-}
-
-
-function parseJson(data){
-    let object = {};
-    data.forEach(function(value, key){
-        object[key] = value;
-    });
-    return JSON.stringify(object);
-}
-
-const user = restoreUser();
-userCheckHandler(user);
-async function userCheckHandler(user) {
-    if(user !== null){
-        const dto = {
-            email : user.email,
-            password : user.password
-        }
-        console.log('user exists')
-        // const account = await axios.post('http://127.0.0.1:8080/users/auth', dto, updateOptions({}));
-        hideLoginPage();
-
-    } else {
-        console.log('user doesn\'t exist');
-    }
-}
-
-function hideLoginPage(){
-    authPage.className = '';
-    splashArea.className = '';
-    authPage.style.display = 'none';
-    navbar.style.display = 'flex';
-    page.style.display = 'block';
-    // userProfile.innerText = user.email;
-}
-
 searchingForm.addEventListener('submit', searchFormHandler)
 function searchFormHandler(e){
     e.preventDefault();
@@ -122,22 +40,17 @@ function searchFormHandler(e){
             'Quantity': data.get('quantity'),
             'Description': data.get('description'),
             'Category': data.get('category'),
-            'Brand': data.get('brand')
+            'Brand': data.get('brand'),
+            csrfHeader : csrfToken
         }
     })).then(function (response){
         productArea.innerHTML = '';
         for (let i = 0; i < response.data.content.length; i++) {
-            let layout;
-            if(restoreUser() !== null) {
-                layout = createProductElement(response.data.content[i]);
-                createFoundProducts(layout);
-                let reviews = document.getElementsByClassName('review');
-                let review = reviews[reviews.length - 1];
-                review.addEventListener('click', reviewHandler);
-            } else {
-                layout = createProductElementForNotAuthUsers(response.data.content[i]);
-                createFoundProducts(layout);
-            }
+            let layout = createProductElement(response.data.content[i]);
+            createFoundProducts(layout);
+            let reviews = document.getElementsByClassName('review');
+            let review = reviews[reviews.length - 1];
+            review.addEventListener('click', reviewHandler);
         }
         if(response.data.content.length !== 0) {
             const previousPageBtn = document.getElementById('previousPageBtn');
@@ -248,7 +161,9 @@ function infoHandler(e){
     e.preventDefault();
     const form = e.target.parentNode.parentNode;
     const productName = form.getElementsByClassName('card-title')[0].innerText;
-    axios.get('http://127.0.0.1:8080/products/' + productName, updateOptions({}))
+    axios.get('http://127.0.0.1:8080/products/' + productName, updateOptions({ headers: {
+            csrfHeader : csrfToken
+        }}))
         .then(function (response){
             console.log(response);
             page.style.display = 'none';
@@ -282,7 +197,9 @@ function reviewHandler(e){
     const form = e.target.parentNode.parentNode;
     const card = form.parentNode;
     const productName = form.getElementsByClassName('card-title')[0].innerText;
-    axios.get('http://127.0.0.1:8080/products/' + productName + '/reviews', updateOptions({}))
+    axios.get('http://127.0.0.1:8080/products/' + productName + '/reviews', updateOptions({ header: {
+            csrfHeader : csrfToken
+        }}))
         .then(function (response){
             page.style.display = 'none';
             const cardLayout = createProductReviewsCardElement(card);
@@ -329,19 +246,9 @@ function mainHandler(e){
     }
 }
 
-logout.addEventListener('click', logoutHandler)
-function logoutHandler(e){
-    e.preventDefault();
-    localStorage.clear();
-    showSplashScreen();
-}
-
-function showSplashScreen(){
-    authPage.className = 'auth-page splash-header';
-    splashArea.className = 'splash';
-    authPage.style.display = 'flex';
-    page.style.display = 'none';
-    navbar.style.display = 'none';
+function logoutHandler(){
+    console.log("test test test")
+    window.location.href = '/login?logout';
 }
 
 
@@ -354,7 +261,9 @@ function putInBasketBtnHandler(e){
         name: form.getElementsByClassName('card-title')[0].innerText,
         quantity: data.get('quantity')
     }
-    axios.post('http://127.0.0.1:8080/basket/ordering', order, updateOptions({}))
+    axios.post('http://127.0.0.1:8080/basket/ordering', order, updateOptions({ headers: {
+            csrfHeader : csrfToken
+        }}))
         .then(function (response){
             console.log(response);
             const layout = createProductForBasket(form, data.get('quantity'));
@@ -431,6 +340,7 @@ function removeProductHandler(e, basketProductId){
     console.log(basketProductId);
     axios.post('http://127.0.0.1:8080/basket/' + basketProductId, {},updateOptions({
         headers: {
+            csrfHeader : csrfToken,
             'X-HTTP-Method-Override':'DELETE'
         }
     }))
@@ -448,7 +358,7 @@ function removeProductHandler(e, basketProductId){
 }
 
 
-document.querySelector('form').addEventListener('submit', function(e) {
+document.getElementById('searching-form').addEventListener('submit', function(e) {
     e.preventDefault();
 
     let minPrice = parseInt(document.getElementById('min-price').value);
@@ -471,7 +381,9 @@ function changeQuantityBtnHandler(e, basketProductId){
         previousQuantity: previousQuantity,
         currentQuantity: quantity
     };
-    axios.post('http://127.0.0.1:8080/basket/quantity', changeProductQuantityDTO, updateOptions({}))
+    axios.post('http://127.0.0.1:8080/basket/quantity', changeProductQuantityDTO, updateOptions({ headers: {
+            csrfHeader : csrfToken
+        }}))
         .then(function (response){
             console.log(response);
             parentElem.getElementsByClassName('card-text')[0].innerText = 'Quantity: ' + response.data.productQuantity;
@@ -488,9 +400,5 @@ function changeQuantityBtnHandler(e, basketProductId){
         });
 }
 
-signInWithoutAuthBtn.addEventListener('click', signInWithoutAuthHandler)
-function signInWithoutAuthHandler(e) {
-    e.preventDefault();
-    hideLoginPage();
-}
+
 
