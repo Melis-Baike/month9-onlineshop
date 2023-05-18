@@ -1,9 +1,9 @@
 package com.example.onlineshop.repository;
 
-import com.example.onlineshop.entity.Role;
+import com.example.onlineshop.entity.Authority;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface RoleRepository extends JpaRepository<Role, Long> {
+public interface AuthorityRepository extends JpaRepository<Authority, Long> {
 }
