@@ -101,6 +101,21 @@ CREATE TABLE IF NOT EXISTS reviews (
     ON DELETE RESTRICT
 );
 
+CREATE TABLE IF NOT EXISTS orders (
+    id BIGSERIAL PRIMARY KEY NOT NULL,
+    user_id BIGINT NOT NULL,
+    product_name TEXT NOT NULL,
+    product_quantity BIGINT NOT NULL,
+    product_price FLOAT(8) NOT NULL,
+    total_price DOUBLE PRECISION NOT NULL,
+    time TIMESTAMP NOT NULL,
+    CONSTRAINT fk_user
+    FOREIGN KEY (user_Id)
+    REFERENCES users (id)
+    ON UPDATE CASCADE
+    ON DELETE RESTRICT
+);
+
 INSERT INTO categories(name)
 VALUES ('Computers'), ('Smartphones'), ('Tablets'), ('TVs'), ('Cameras'), ('Game Consoles'), ('Laptops'),
        ('Smartwatches'), ('Headphones'), ('Printers'), ('Speakers');

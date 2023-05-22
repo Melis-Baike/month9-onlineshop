@@ -5,6 +5,23 @@ VALUES ('Andrey', 'andreyka@gmail.com', crypt('andrey123', gen_salt('bf')), true
        ('Stephen', 'curry@gmail.com', crypt('stephcur7', gen_salt('bf')), true, 2),
        ('Natlus', 'makintoshev@gmail.com', crypt('pojo222', gen_salt('bf')), true, 2),
        ('Tomas', 'jerriev@gmail.com', crypt('tomandjerry', gen_salt('bf')), true, 2);
+INSERT INTO orders (user_id, product_name, product_quantity, product_price, total_price, time)
+VALUES (1, 'Apple iPhone 12', 1, 699, 699, CURRENT_TIMESTAMP),
+       (1, 'Sonos One', 2, 199, 398, CURRENT_TIMESTAMP),
+       (1, 'Sonos Beam', 2, 399, 798, CURRENT_TIMESTAMP),
+       (2, 'HP Color LaserJet Enterprise MFP M477', 1, 629, 629, CURRENT_TIMESTAMP),
+       (2, 'Alienware Aurora R10', 1, 2899, 2899, CURRENT_TIMESTAMP),
+       (2, 'MacBook Air M1', 1, 1299, 1299, CURRENT_TIMESTAMP),
+       (3, 'LG OLED CX', 2, 2499, 4998, CURRENT_TIMESTAMP),
+       (3, 'Canon EOS R6', 1, 2499, 2499, CURRENT_TIMESTAMP),
+       (3, 'HP Color LaserJet Enterprise MFP M477', 3, 629, 1887, CURRENT_TIMESTAMP),
+       (3, 'Samsung Galaxy Tab S7+', 1, 849, 849, CURRENT_TIMESTAMP),
+       (4, 'Samsung Galaxy S21', 2, 799, 1598, CURRENT_TIMESTAMP),
+       (4, 'Canon EOS R5', 1, 3899, 3899, CURRENT_TIMESTAMP),
+       (4, 'Sony PlayStation 5', 2, 499, 998, CURRENT_TIMESTAMP),
+       (5, 'Canon PIXMA TR150', 4, 199, 796, CURRENT_TIMESTAMP),
+       (5, 'Apple Watch Series 6', 2, 399, 798, CURRENT_TIMESTAMP),
+       (5, 'Samsung Galaxy Watch 4 Classic', 1, 349, 349, CURRENT_TIMESTAMP);
 INSERT INTO reviews (text, rating, user_id, product_id)
 VALUES ('Good product!', 4.8, 1, 1),
        ('I bought it 1 year ago and it has already broken...', 2.7, 1, 14),
