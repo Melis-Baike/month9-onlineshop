@@ -56,8 +56,6 @@ public class UserController {
             session.setAttribute("user", userDTO);
             Optional<List<BasketProductDTO>> basketProductDTOList = basketProductService.getUserBasket(userDTO.getEmail());
             basketProductDTOList.ifPresent(basketProductDTOS -> session.setAttribute("basket", basketProductDTOS));
-            System.out.println(session.getAttribute("user"));
-            System.out.println(session.getAttribute("basket"));
             return "redirect:/";
         } else {
             return "login";
