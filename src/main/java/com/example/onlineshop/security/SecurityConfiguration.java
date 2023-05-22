@@ -15,6 +15,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -39,12 +40,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/users/*").permitAll()
                 .antMatchers("/users/*/*").permitAll()
                 .antMatchers("/users/register/post").permitAll()
-                .antMatchers("/basket/**").permitAll()
-                .antMatchers("/products/*/*").permitAll()
-                .antMatchers("/products/*").permitAll()
+                .antMatchers("/basket/**").fullyAuthenticated()
+                .antMatchers("/products/*/*").fullyAuthenticated()
+                .antMatchers("/products/*").fullyAuthenticated()
                 .antMatchers("/static/**/**").permitAll()
                 .antMatchers( "/users/registration").permitAll()
-                .anyRequest().authenticated();
+                .antMatchers("/captcha/**").permitAll()
+                .anyRequest().fullyAuthenticated();
 
         http.formLogin()
                 .loginPage("/users/login")
@@ -61,8 +63,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .deleteCookies("JSESSIONID")
                 .permitAll();
         http.cors().configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues());
-        http.csrf().csrfTokenRepository(new HttpSessionCsrfTokenRepository());
-        http.httpBasic().disable();
+        http.csrf().csrfTokenRepository(new HttpSessionCsrfTokenRepository())
+                .requireCsrfProtectionMatcher(new AntPathRequestMatcher("/secured/*"));
+//        http.sessionManagement()
+//                .sessionCreationPolicy(SessionCreationPolicy.ALWAYS);
     }
 
     @Bean
