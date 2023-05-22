@@ -4,27 +4,9 @@ const page = document.getElementById('page');
 const main = document.getElementById('navbar-brand');
 const basket = document.getElementById('basket');
 const productQuantityModal = document.getElementById('productQuantityModal');
-const saveBtn = document.getElementsByClassName('saveBtn')[0];
+const saveProductForm = document.getElementById('saveProductForm');
 const csrfToken = document.querySelector('meta[name="_csrf_token"]').getAttribute('content');
 const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
-
-
-function updateOptions(options) {
-    const update = { ...options };
-    update.mode = 'cors';
-    update.headers = { ... options.headers };
-    update.headers['Content-Type'] = 'application/json';
-    const user = restoreUser();
-    if(user) {
-        update.headers['Authorization'] = 'Basic ' + btoa(user.email + ':' + user.password);
-    }
-    return update;
-}
-
-function restoreUser() {
-    const userAsJSON = localStorage.getItem('user');
-    return JSON.parse(userAsJSON);
-}
 
 searchingForm.addEventListener('submit', searchFormHandler)
 function searchFormHandler(e){
@@ -33,7 +15,10 @@ function searchFormHandler(e){
     const data = new FormData(form);
     const page = productArea.className.substring(16);
     const size = 2;
-    axios.get('http://127.0.0.1:8080/products/' + page + "/" + size, updateOptions({ headers : {
+    axios({
+        method: 'get',
+        url: '/products/' + page + '/' + size,
+        headers: {
             'Name': data.get('name'),
             'Min-Price': data.get('min-price'),
             'Max-Price': data.get('max-price'),
@@ -41,9 +26,9 @@ function searchFormHandler(e){
             'Description': data.get('description'),
             'Category': data.get('category'),
             'Brand': data.get('brand'),
-            csrfHeader : csrfToken
+            'X-CSRF-TOKEN': csrfToken,
         }
-    })).then(function (response){
+    }).then(function (response){
         productArea.innerHTML = '';
         for (let i = 0; i < response.data.content.length; i++) {
             let layout = createProductElement(response.data.content[i]);
@@ -84,7 +69,7 @@ function createFoundProducts(layout){
     let putBtns = document.getElementsByClassName('putBtn');
     let putBtn = putBtns[putBtns.length - 1];
     putBtn.addEventListener('click', formatProductModalWindow);
-    saveBtn.addEventListener('click', putInBasketBtnHandler);
+    saveProductForm.addEventListener('submit', putInBasketBtnHandler);
 }
 
 function previousPageEventHandler(e){
@@ -116,7 +101,7 @@ function parse(element){
 
 function createProductElement(product){
     return '<div class="card productElement" style="width: 21rem;" id="product' + product.id + '">\n' +
-        '  <img class="card-img-top productCardImage" src="/static/images/' + product.image + '" alt="Card image cap">\n' +
+        '  <img class="card-img-top productCardImage" src="../static/images/' + product.image + '" alt="Card image cap">\n' +
         '  <div class="card-body productCardBody">\n' +
         '    <h5 class="card-title">' + product.name + '</h5>\n' +
         '    <p class="card-text">' + product.description + '</p>\n' +
@@ -140,31 +125,17 @@ function createPreviousPageBtn(){
     return '<button class="btn btn-primary previousPageBtn" id="previousPageBtn">Previous page</button>';
 }
 
-function createProductElementForNotAuthUsers(product){
-    return '<div class="card productElement" style="width: 21rem;" id="product' + product.id + '">\n' +
-        '  <img class="card-img-top productCardImage" src="/static/images/' + product.image + '" alt="Card image cap">\n' +
-        '  <div class="card-body productCardBody">\n' +
-        '    <h5 class="card-title">' + product.name + '</h5>\n' +
-        '    <p class="card-text">' + product.description + '</p>\n' +
-        '    <div class="cardBtns">' +
-        '       <a href="#" class="btn btn-primary productInfo cardBtn">More info</a>\n' +
-        '       <button type="button" class="btn btn-primary putBtn cardBtn" data-bs-toggle="modal" data-bs-target="#productQuantityModal" ' +
-        '           id="modalBtn">\n' +
-        '           Put in the basket\n' +
-        '       </button>\n' +
-        '    </div>' +
-        '  </div>\n' +
-        '</div>'
-}
-
 function infoHandler(e){
     e.preventDefault();
     const form = e.target.parentNode.parentNode;
     const productName = form.getElementsByClassName('card-title')[0].innerText;
-    axios.get('http://127.0.0.1:8080/products/' + productName, updateOptions({ headers: {
-            csrfHeader : csrfToken
-        }}))
-        .then(function (response){
+        axios({
+            method: 'get',
+            url: '/products/' + productName,
+            headers: {
+                'X-CSRF-TOKEN': csrfToken,
+            }
+        }).then(function (response){
             console.log(response);
             page.style.display = 'none';
             const layout = createProductInfoElement(response.data);
@@ -178,7 +149,7 @@ function infoHandler(e){
 function createProductInfoElement(product){
     return '<div class="card d-flex justify-content-center more-info">\n' +
         '    <div class="card-header">\n' +
-        '<img src="/static/images/' + product.image + '" class="card-img-top align-self-center productInfoImage" ' +
+        '<img src="../static/images/' + product.image + '" class="card-img-top align-self-center productInfoImage" ' +
         ' alt="productImage">' +
         '    </div>\n' +
         '    <div class="card-body">\n' +
@@ -197,10 +168,13 @@ function reviewHandler(e){
     const form = e.target.parentNode.parentNode;
     const card = form.parentNode;
     const productName = form.getElementsByClassName('card-title')[0].innerText;
-    axios.get('http://127.0.0.1:8080/products/' + productName + '/reviews', updateOptions({ header: {
-            csrfHeader : csrfToken
-        }}))
-        .then(function (response){
+    axios({
+        method: 'get',
+        url: '/products/' + productName + '/reviews',
+        headers: {
+            'X-CSRF-TOKEN': csrfToken,
+        }
+    }).then(function (response){
             page.style.display = 'none';
             const cardLayout = createProductReviewsCardElement(card);
             const cardDoc = parse(cardLayout);
@@ -247,157 +221,57 @@ function mainHandler(e){
 }
 
 function logoutHandler(){
-    console.log("test test test")
     window.location.href = '/login?logout';
 }
 
-
 function putInBasketBtnHandler(e){
     e.preventDefault();
-    const submitForm = e.target.parentElement;
-    const form = e.target.parentNode.parentElement.parentElement;
+    const submitForm = e.target;
+    const form = e.target.parentElement.parentElement;
     const data = new FormData(submitForm);
     const order = {
         name: form.getElementsByClassName('card-title')[0].innerText,
         quantity: data.get('quantity')
     }
-    axios.post('http://127.0.0.1:8080/basket/ordering', order, updateOptions({ headers: {
-            csrfHeader : csrfToken
-        }}))
-        .then(function (response){
-            console.log(response);
-            const layout = createProductForBasket(form, data.get('quantity'));
-            const nDoc = parse(layout);
-            const title = nDoc.body.getElementsByClassName('card')[0].getElementsByClassName('card-title')[0].innerText;
-            const src = nDoc.body.getElementsByClassName('card')[0].getElementsByClassName('card-img-top')[0].src;
-            basket.append(nDoc.body.getElementsByClassName('card')[0]);
+    console.log(order)
+    axios({
+        method: 'post',
+        url: '/basket/ordering',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': csrfToken,
+            'Content-Type': 'application/json',
+            withCredentials: true
+        },
+        data: order
+    }).then(function(response) {
+            console.log(response.data);
             const quantity = form.getElementsByClassName('card-text')[0].innerText.substring(10) - data.get('quantity');
             form.getElementsByClassName('card-text')[0].innerText = 'Quantity: ' + quantity;
-            let removeButtons = document.body.getElementsByClassName('remove');
-            let lastRemoveButton = removeButtons[removeButtons.length - 1];
-            lastRemoveButton.addEventListener('click', e => removeProductHandler(e, response.data.id));
-            document.body.getElementsByClassName('changeQuantityForm')[0].addEventListener('submit',
-                    e => changeQuantityBtnHandler(e, response.data.id));
-            const products = restoreProducts() || [];
-            const productJSON = {
-                id: response.data.id,
-                name: title,
-                src: src,
-                quantity: data.get('quantity')
-            };
-            products.push(productJSON);
-            saveProducts(products);
-        }).catch(function (error){
-        console.log(error);
-    })
+        })
+        .catch(function(error) {
+            console.log(error);
+        });
 }
 
-function restoreProducts(){
-    const productsAsJSON = localStorage.getItem('products');
-    return JSON.parse(productsAsJSON);
-}
-
-function saveProducts(products){
-    const productsAsJSON = JSON.stringify(products);
-    localStorage.setItem('products', productsAsJSON);
-}
-
-async function formatProductModalWindow(e){
+function formatProductModalWindow(e){
     e.preventDefault();
     const form = e.target.parentElement.parentElement.parentElement;
     const imageSrc = form.getElementsByClassName('card-img-top')[0].src;
     const title = form.getElementsByClassName('card-title')[0].innerText;
-    const product = await axios.get('http://127.0.0.1:8080/products/' + title, updateOptions({}));
-    productQuantityModal.getElementsByClassName('card-img-top')[0].src = imageSrc;
-    productQuantityModal.getElementsByClassName('card-title')[0].innerText = title;
-    productQuantityModal.getElementsByClassName('card-text')[0].innerText = 'Quantity: ' + product.data.quantity;
-}
-
-while (basket.firstChild){
-    basket.removeChild(basket.firstChild);
-}
-
-function createProductForBasket(card, quantity){
-    const imageSrc = card.getElementsByClassName('card-img-top')[0].src;
-    const title = card.getElementsByClassName('card-title')[0].innerText;
-    return '<div class="card basketCard" style="width: 18rem;">\n' +
-        '  <img class="card-img-top basketCardImage" src="' + imageSrc + '" alt="Card image cap">\n' +
-        '  <div class="card-body">\n' +
-        '    <h5 class="card-title">' + title + '</h5>\n' +
-        '    <p class="card-text">Quantity: ' + quantity + '</p>\n' +
-        '    <a href="#" class="btn btn-primary remove" id="productRemoveFromBasket">Remove</a>\n' +
-        '    <form class="changeQuantityForm" id="changeQuantityForm">' +
-        '       <input class="form-control mr-sm-2" type="number" placeholder="Quantity" name="quantity" required>\n' +
-        '       <button type="submit" class="btn btn-primary changeQuantityBtn" id="changeQuantityBtn">Change quantity</button>' +
-        '    </form>' +
-        '  </div>\n' +
-        '</div>'
-}
-
-function removeProductHandler(e, basketProductId){
-    e.preventDefault();
-    const form = e.target.parentElement.parentElement;
-    console.log(basketProductId);
-    axios.post('http://127.0.0.1:8080/basket/' + basketProductId, {},updateOptions({
+    axios({
+        method: 'get',
+        url: '/products/' + title,
         headers: {
-            csrfHeader : csrfToken,
-            'X-HTTP-Method-Override':'DELETE'
+            'X-CSRF-TOKEN': csrfToken
         }
-    }))
-        .then(function (response){
-            console.log(response);
-            let products = restoreProducts() || [];
-            products = products.filter(function(product) {
-                return product.id !== basketProductId;
-            });
-            saveProducts(products);
-            form.remove();
-        }).catch(function (error){
+    }).then(function (response){
+        productQuantityModal.getElementsByClassName('card-img-top')[0].src = imageSrc;
+        productQuantityModal.getElementsByClassName('card-title')[0].innerText = title;
+        productQuantityModal.getElementsByClassName('card-text')[0].innerText = 'Quantity: ' + response.data.quantity;
+    }).catch(function (error){
         console.log(error);
-    });
-}
-
-
-document.getElementById('searching-form').addEventListener('submit', function(e) {
-    e.preventDefault();
-
-    let minPrice = parseInt(document.getElementById('min-price').value);
-    let maxPrice = parseInt(document.getElementById('max-price').value);
-
-    console.log('Минимальная цена:', minPrice);
-    console.log('Максимальная цена:', maxPrice);
-});
-
-function changeQuantityBtnHandler(e, basketProductId){
-    e.preventDefault();
-    const form = e.target;
-    const parentElem = e.target.parentElement;
-    const data = new FormData(form);
-    const quantity = data.get('quantity');
-    const previousQuantity = parentElem.getElementsByClassName('card-text')[0].innerText.substring(10);
-    const changeProductQuantityDTO = {
-        productName: parentElem.getElementsByClassName('card-title')[0].innerText,
-        basketProductId: basketProductId,
-        previousQuantity: previousQuantity,
-        currentQuantity: quantity
-    };
-    axios.post('http://127.0.0.1:8080/basket/quantity', changeProductQuantityDTO, updateOptions({ headers: {
-            csrfHeader : csrfToken
-        }}))
-        .then(function (response){
-            console.log(response);
-            parentElem.getElementsByClassName('card-text')[0].innerText = 'Quantity: ' + response.data.productQuantity;
-            let products = restoreProducts();
-            for (let i = 0; i < products.length; i++) {
-                if(basketProductId === products[i].id){
-                    products[i].quantity = quantity;
-                }
-            }
-            saveProducts(products);
-        })
-        .catch(function (error){
-            console.log(error);
-        });
+    })
 }
 
 
