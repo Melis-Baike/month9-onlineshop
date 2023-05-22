@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Registration Form</title>
-    <link rel="stylesheet" href="/static/frontend/css/index.css">
+    <link rel="stylesheet" href="../static/frontend/css/formInfo.css">
 </head>
 <body>
 <div class="auth-page splash-header" id="auth-page">
@@ -22,5 +22,5 @@
     </div>
 </div>
 </body>
-<script language="JavaScript" src="/static/frontend/js/register.js"></script>
+<script language="JavaScript" src="../static/frontend/js/register.js"></script>
 </html>

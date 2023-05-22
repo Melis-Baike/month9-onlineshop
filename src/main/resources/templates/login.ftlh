@@ -5,7 +5,7 @@
     <title>Authentication</title>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <link rel="stylesheet" href="/static/frontend/css/index.css">
+    <link rel="stylesheet" href="../static/frontend/css/formInfo.css">
 </head>
 <body>
     <div class="auth-page splash-header" id="auth-page">
@@ -23,5 +23,5 @@
         </div>
     </div>
 </body>
-<script language="JavaScript" src="/static/frontend/js/login.js"></script>
+<script language="JavaScript" src="../static/frontend/js/login.js"></script>
 </html>

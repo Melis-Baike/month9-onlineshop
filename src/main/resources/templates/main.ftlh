@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="_csrf_header" content="<#if _csrf.headerName??>${_csrf.headerName}</#if>"/>
   <meta name="_csrf_token" content="<#if _csrf.token??>${_csrf.token}</#if>"/>
-  <title>Test</title>
+  <title>Main</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
   <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
@@ -13,19 +13,19 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.4/font/bootstrap-icons.css">
-  <link rel="stylesheet" href="/static/frontend/css/index.css">
+  <link rel="stylesheet" href="../static/frontend/css/index.css">
 </head>
 <body>
 <nav class="navbar navbar-dark bg-dark" id="navbar">
   <a class="navbar-brand" id="navbar-brand">Online-Shop</a>
   <div class="userBtn">
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#basketModal" id="modalBtn">
-        Basket
-    </button>
+    <form action="/basket" method="get">
+      <button type="submit" id="modalBtn">Basket</button>
+    </form>
     <#if _csrf??>
       <form action="/users/logout" method="post">
         <input type="hidden" name="${(_csrf.parameterName)!'csrf'}" value="${(_csrf.token)!'--no-token--'}" />
-        <button type="submit">Log out</button>
+        <button type="submit">Выйти</button>
       </form>
     <#else>
       <button class="logOut" id="logout" onclick="logoutHandler()">Выйти</button>
@@ -72,23 +72,6 @@
     <div class="productArea page0" id="productArea"></div>
   </div>
 </div>
-<div class="modal fade" id="basketModal" tabindex="-1" authority="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-  <div class="modal-dialog" authority="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="basketModalTitle">Basket</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <div class="basket" id="basket"></div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
-    </div>
-  </div>
-</div>
 <div class="modal fade productModalWindow" id="productQuantityModal" tabindex="-1" authority="dialog"
        aria-labelledby="exampleModalLongTitle" aria-hidden="true">
   <div class="modal-dialog" authority="document">
@@ -103,7 +86,7 @@
                        <div class="card-body">
                          <h5 class="card-title"></h5>
                          <p class="card-text"></p>
-                         <form>
+                         <form id="saveProductForm">
                                <input class="form-control mr-sm-2" type="number" placeholder="Quantity"
                                       aria-label="Search" name="quantity"  min="1" pattern="[0-9]*" required>
                                <button type="submit" class="btn btn-primary saveBtn">Save</button>
@@ -115,5 +98,5 @@
     </div>
 </div>
 </body>
-<script language="JavaScript" src="/static/frontend/js/index.js"></script>
+<script language="JavaScript" src="../static/frontend/js/main.js"></script>
 </html>

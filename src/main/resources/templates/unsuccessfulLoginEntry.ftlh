@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Unsuccessful entry</title>
-    <link rel="stylesheet" href="/static/frontend/css/formInfo.css">
+    <link rel="stylesheet" href="/static/frontend/css/util.css">
 </head>
 
 <body>
@@ -12,15 +12,15 @@
     <form action="/users/login" method="get">
         <fieldset>
             <div class="legend">
-                <p>Что-то пошло не так!</p>
+                <p>Something went wrong!</p>
                 <img src="/static/utilsImage/rejected.png" alt="rejected" style="display:block; width: 200px; height: 200px;">
             </div>
-            <div class="center">Авторизация не удалась</div>
+            <div class="center">Authorization failed</div>
             <div class="hr-line">
-                <span class="details">Пользователь не существует</span>
+                <span class="details">The user does not exist</span>
             </div>
             <div class="form-element">
-                <button class="register-button" type="submit">Авторизоваться</button>
+                <button class="register-button" type="submit">Log in</button>
             </div>
         </fieldset>
     </form>

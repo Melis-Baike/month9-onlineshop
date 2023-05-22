@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Successful entry</title>
-    <link rel="stylesheet" href="/static/frontend/css/formInfo.css">
+    <link rel="stylesheet" href="/static/frontend/css/util.css">
 </head>
 
 <body>
@@ -12,15 +12,15 @@
     <form action="/users/login" method="get">
         <fieldset>
             <div class="legend">
-                <p>Добро пожаловать!</p>
+                <p>Welcome!</p>
                 <img src="/static/utilsImage/confirmed.png" alt="confirmed" style="display:block; width: 200px; height: 200px;">
             </div>
-            <div class="center">Регистрация прошла успешно</div>
+            <div class="center">Registration completed successfully</div>
             <div class="hr-line">
-                <span class="details">Ваша заявка на регистрацию подтверждена</span>
+                <span class="details">Your registration request has been confirmed</span>
             </div>
             <div class="form-element">
-                <button class="register-button" type="submit">Авторизоваться</button>
+                <button class="register-button" type="submit">Log in</button>
             </div>
         </fieldset>
     </form>
