@@ -1,7 +1,5 @@
 package com.example.onlineshop.DTO;
 
-import com.example.onlineshop.entity.Brand;
-import com.example.onlineshop.entity.Category;
 import com.example.onlineshop.entity.Product;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Builder;
