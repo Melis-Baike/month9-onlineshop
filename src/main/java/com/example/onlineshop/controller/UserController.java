@@ -1,6 +1,9 @@
 package com.example.onlineshop.controller;
 
+import com.example.onlineshop.DTO.BasketProductDTO;
+import com.example.onlineshop.DTO.UserDTO;
 import com.example.onlineshop.DTO.UserRegistrationDTO;
+import com.example.onlineshop.service.BasketProductService;
 import com.example.onlineshop.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -15,13 +18,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/users")
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
+    private final BasketProductService basketProductService;
 
     @PostMapping("/register/post")
     public String registerPage(@ModelAttribute @Valid UserRegistrationDTO userRegistrationDTO, BindingResult validationResult) {
@@ -37,15 +44,20 @@ public class UserController {
 
     @GetMapping("/register")
     public String pageRegisterCustomer() {
-        return "register";
+        return "redirect:/captcha";
     }
 
 
     @GetMapping("/auth")
-    public String auth(){
+    public String auth(HttpSession session){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication.getPrincipal() != "anonymousUser") {
-            userService.login(authentication);
+            UserDTO userDTO = userService.login(authentication);
+            session.setAttribute("user", userDTO);
+            Optional<List<BasketProductDTO>> basketProductDTOList = basketProductService.getUserBasket(userDTO.getEmail());
+            basketProductDTOList.ifPresent(basketProductDTOS -> session.setAttribute("basket", basketProductDTOS));
+            System.out.println(session.getAttribute("user"));
+            System.out.println(session.getAttribute("basket"));
             return "redirect:/";
         } else {
             return "login";
@@ -69,10 +81,12 @@ public class UserController {
     }
 
     @PostMapping("/logout")
-    public String logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
+    public String logout(HttpServletRequest request, HttpSession session, HttpServletResponse response, Authentication authentication) {
         if (authentication != null) {
             new SecurityContextLogoutHandler().logout(request, response, authentication);
         }
+        session.removeAttribute("user");
+        session.removeAttribute("basket");
         return "redirect:/login?logout";
     }
 }
