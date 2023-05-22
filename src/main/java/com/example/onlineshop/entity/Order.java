@@ -6,34 +6,28 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Data
-@Table(name = "basket_products")
-public class BasketProduct {
+@Table(name = "orders")
+public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @OneToOne(fetch = FetchType.LAZY)
+    private User user;
     @Column(name = "product_name")
     private String productName;
-    @Column(name = "product_image")
-    private String productImage;
     @Column(name = "product_quantity")
     private Long productQuantity;
-    @Column(name = "product_description")
-    private String productDescription;
     @Column(name = "product_price")
     private Double productPrice;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "basket_id")
-    private Basket basket;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
-    private Category category;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "brand_id")
-    private Brand brand;
+    @Column(name = "total_price")
+    private Double totalPrice;
+    @Column(name = "time")
+    private LocalDateTime time;
 }
