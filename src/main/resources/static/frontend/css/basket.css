@@ -3,3 +3,11 @@
     flex-wrap: wrap;
     justify-content: space-around;
 }
+
+.basketCard{
+    margin-top: 20px;
+}
+
+.basketCardImage{
+    height: 21rem;
+}

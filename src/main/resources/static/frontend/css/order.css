@@ -1,0 +1,13 @@
+.productCardImage{
+    height: 21rem;
+}
+
+.orderCard{
+    margin-top: 20px;
+}
+
+.myOrders{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
