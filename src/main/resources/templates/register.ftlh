@@ -18,7 +18,6 @@
         <button type="submit">Create</button>
       </form>
         <button id="signIn" onclick="loginBtnHandler()">Already registered?</button>
-        <button class="signInWithoutAuth" id="signInWithoutAuth" onclick="redirectToMainPage()">Sign in without auth</button>
     </div>
 </div>
 </body>

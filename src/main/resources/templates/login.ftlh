@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="_csrf_header" content="<#if _csrf.headerName??>${_csrf.headerName}</#if>"/>
+    <meta name="_csrf_token" content="<#if _csrf.token??>${_csrf.token}</#if>"/>
     <title>Authentication</title>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
@@ -14,12 +16,13 @@
                 <#if _csrf??>
                     <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}" value="${(_csrf.token)!'csrf-token'}" />
                 </#if>
-                <input type="email" required placeholder="email" name="email"/>
-                <input type="password" required placeholder="password" name="password"/>
+                <input type="email" required placeholder="email" name="email" class="logEmail"/>
+                <input type="password" required placeholder="password" name="password" class="logPassword"/>
                 <button type="submit">Login</button>
             </form>
             <button id="createAccount" onclick="notRegisteredBtnHandler()">Not registered?</button>
-            <button class="signInWithoutAuth" id="signInWithoutAuth" onclick="redirectToMainPage()">Sign in without auth</button>
+            <button id="createAccount" onclick="recoveryPasswordBtnHandler()">Forgot your password?</button>
+            <button class="signInWithoutAuth" id="signInWithoutAuth">Sign in without auth</button>
         </div>
     </div>
 </body>

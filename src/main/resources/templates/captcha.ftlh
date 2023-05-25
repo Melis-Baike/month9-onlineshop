@@ -16,7 +16,7 @@
           <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}" value="${(_csrf.token)!'csrf-token'}" />
         </#if>
         <input type="text" placeholder="${captcha}" readonly value="${captcha}" name="captcha">
-        <input type="text" name="text" placeholder="Captcha">
+        <input type="text" name="text" placeholder="Captcha" required>
         <button type="submit">Submit</button>
       </form>
     </div>

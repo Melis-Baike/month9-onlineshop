@@ -18,17 +18,20 @@
 <body>
 <nav class="navbar navbar-dark bg-dark" id="navbar">
   <a class="navbar-brand" id="navbar-brand">Online-Shop</a>
-  <div class="userBtn">
+  <div class="userBtn d-flex">
+    <form action="/myOrders" method="get">
+      <button type="submit" id="orderBtn">My orders</button>
+    </form>
     <form action="/basket" method="get">
       <button type="submit" id="modalBtn">Basket</button>
     </form>
     <#if _csrf??>
-      <form action="/users/logout" method="post">
+      <form action="/users/logout" method="get">
         <input type="hidden" name="${(_csrf.parameterName)!'csrf'}" value="${(_csrf.token)!'--no-token--'}" />
-        <button type="submit">Выйти</button>
+        <button type="submit">Log out</button>
       </form>
     <#else>
-      <button class="logOut" id="logout" onclick="logoutHandler()">Выйти</button>
+      <button class="logOut" id="logout" onclick="logoutHandler()">Log out</button>
     </#if>
   </div>
 </nav>
@@ -96,6 +99,24 @@
             </div>
         </div>
     </div>
+</div>
+<div class="modal" tabindex="-1" role="dialog" id="feedbackModal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Feedback</h5>
+      </div>
+      <div class="modal-body">
+        <form id="feedbackSendForm" class="d-flex flex-wrap justify-content-between align-items-center flex-column">
+          <input type="hidden" class="hiddenProductName" name="productName" value="">
+<#--          <input type="text" pattern="[0-9.,]+" inputmode="decimal" max="5" min="0.1" step="0.1" name="rating" placeholder="Rating" class="w-50" required>-->
+              <input type="number" max="5" min="0.1" step="0.1" name="rating" placeholder="Rating" class="w-50" required>
+          <input type="text" name="text" placeholder="Text" required>
+          <button type="submit" class="btn btn-secondary feedbackSendBtn" id="feedbackSendBtn">Send</button>
+        </form>
+      </div>
+    </div>
+  </div>
 </div>
 </body>
 <script language="JavaScript" src="../static/frontend/js/main.js"></script>
