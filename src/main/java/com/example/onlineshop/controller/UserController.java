@@ -1,8 +1,10 @@
 package com.example.onlineshop.controller;
 
 import com.example.onlineshop.DTO.BasketProductDTO;
+import com.example.onlineshop.DTO.PasswordRecoveryDTO;
 import com.example.onlineshop.DTO.UserDTO;
 import com.example.onlineshop.DTO.UserRegistrationDTO;
+import com.example.onlineshop.entity.User;
 import com.example.onlineshop.service.BasketProductService;
 import com.example.onlineshop.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -10,11 +12,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,6 +22,7 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Controller
 @RequestMapping("/users")
@@ -78,13 +79,56 @@ public class UserController {
         return "unsuccessfulLoginEntry";
     }
 
-    @PostMapping("/logout")
-    public String logout(HttpServletRequest request, HttpSession session, HttpServletResponse response, Authentication authentication) {
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
         if (authentication != null) {
             new SecurityContextLogoutHandler().logout(request, response, authentication);
         }
-        session.removeAttribute("user");
-        session.removeAttribute("basket");
         return "redirect:/login?logout";
+    }
+
+    @GetMapping("/specifyEmail")
+    public String getSpecifyEmailPage(){
+        return "specifyEmail";
+    }
+
+    @PostMapping("/specifyEmail")
+    public String setEmailForPasswordRecovery(@RequestParam("text") String email, Model model){
+        Optional<User> optionalUser = userService.findByEmail(email);
+        if(optionalUser.isPresent()){
+            String token = UUID.randomUUID().toString();
+            model.addAttribute("token", token);
+            model.addAttribute("email", email);
+            return "confirmToken";
+        }
+        return "redirect:/users/specifyEmail";
+    }
+
+    @PostMapping("/token")
+    public String getTokenPage(@RequestParam("email") String email, @RequestParam("token") String token,
+                               @RequestParam("text") String confirmedToken, Model model){
+        Optional<User> optionalUser = userService.findByEmail(email);
+        if(optionalUser.isPresent()){
+            model.addAttribute("email", email);
+            if(token.equals(confirmedToken)) {
+                return "passwordRecovery";
+            } else {
+                String newToken = UUID.randomUUID().toString();
+                model.addAttribute("token", newToken);
+                return "confirmToken";
+            }
+        } else {
+            return "redirect:/users/specifyEmail";
+        }
+    }
+
+    @PostMapping("/passwordRecovery")
+    public String recoveryPassword(@Valid PasswordRecoveryDTO passwordRecoveryDTO){
+        boolean bool = userService.recoveryPassword(passwordRecoveryDTO);
+        if(bool){
+            return "successfulPasswordRecovery";
+        } else {
+            return "unsuccessfulPasswordRecovery";
+        }
     }
 }

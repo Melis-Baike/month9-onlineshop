@@ -1,18 +1,18 @@
 package com.example.onlineshop.controller;
 
+import com.example.onlineshop.DTO.FeedbackDTO;
 import com.example.onlineshop.DTO.ProductDTO;
 import com.example.onlineshop.DTO.ReviewDTO;
 import com.example.onlineshop.service.ProductService;
 import com.example.onlineshop.service.ReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
@@ -49,5 +49,10 @@ public class ProductController {
     @GetMapping("/{productName}/reviews")
     public ResponseEntity<Optional<Page<ReviewDTO>>> getProductsReviews(@PathVariable @Valid @NotBlank String productName){
         return ResponseEntity.ok(reviewService.getReviewList(productName));
+    }
+
+    @PostMapping("/reviews")
+    public ResponseEntity<ReviewDTO> getFeedback(@Valid @RequestBody FeedbackDTO feedbackDTO, HttpSession httpSession){
+        return new ResponseEntity<>(reviewService.setReview(feedbackDTO, httpSession), HttpStatus.OK);
     }
 }
