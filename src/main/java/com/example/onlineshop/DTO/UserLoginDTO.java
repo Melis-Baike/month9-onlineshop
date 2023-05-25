@@ -1,5 +1,6 @@
 package com.example.onlineshop.DTO;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,11 +14,12 @@ import javax.validation.constraints.Size;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class UserLoginDTO {
     @Email(message = "Enter your email")
     @NotBlank(message = "The email can't be empty")
     private String email;
     @NotBlank(message = "The password can't be empty")
-    @Size(min = 4, message = "The password must have at least 8 characters")
+    @Size(min = 4, message = "The password must have at least 4 characters")
     private String password;
 }
