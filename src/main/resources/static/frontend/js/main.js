@@ -5,6 +5,7 @@ const main = document.getElementById('navbar-brand');
 const basket = document.getElementById('basket');
 const productQuantityModal = document.getElementById('productQuantityModal');
 const saveProductForm = document.getElementById('saveProductForm');
+const feedbackSendForm = document.getElementById('feedbackSendForm');
 const csrfToken = document.querySelector('meta[name="_csrf_token"]').getAttribute('content');
 const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
 
@@ -28,16 +29,35 @@ function searchFormHandler(e){
             'Brand': data.get('brand'),
             'X-CSRF-TOKEN': csrfToken,
         }
-    }).then(function (response){
+    }).then(function (parentResponse){
         productArea.innerHTML = '';
-        for (let i = 0; i < response.data.content.length; i++) {
-            let layout = createProductElement(response.data.content[i]);
-            createFoundProducts(layout);
-            let reviews = document.getElementsByClassName('review');
-            let review = reviews[reviews.length - 1];
-            review.addEventListener('click', reviewHandler);
+        for (let i = 0; i < parentResponse.data.content.length; i++) {
+            axios({
+                method: 'get',
+                url: '/orders/check/' + parentResponse.data.content[i].name,
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken,
+                }
+            }).then(function (response){
+                let layout;
+                let nDoc;
+                if(response.data !== true){
+                    layout = createProductElement(parentResponse.data.content[i]);
+                    nDoc = parse(layout);
+                    createFoundProducts(nDoc);
+                } else {
+                    layout = createProductElementWithFeedback(parentResponse.data.content[i]);
+                    nDoc = parse(layout);
+                    createFoundProducts(nDoc);
+                    let feedbackBtns = document.getElementsByClassName('feedbackBtn');
+                    let feedbackBtn = feedbackBtns[feedbackBtns.length - 1];
+                    feedbackBtn.addEventListener('click', feedbackHandler);
+                }
+            }).catch(function (error){
+                console.log(error);
+            })
         }
-        if(response.data.content.length !== 0) {
+        if(parentResponse.data.content.length !== 0) {
             const previousPageBtn = document.getElementById('previousPageBtn');
             if(!previousPageBtn){
                 const previousPageBtnMarkUp = createPreviousPageBtn();
@@ -60,8 +80,7 @@ function searchFormHandler(e){
     });
 }
 
-function createFoundProducts(layout){
-    let nDoc = parse(layout);
+function createFoundProducts(nDoc){
     productArea.append(nDoc.body.getElementsByClassName('productElement')[0]);
     let information = document.getElementsByClassName('productInfo');
     let info = information[information.length - 1];
@@ -69,8 +88,18 @@ function createFoundProducts(layout){
     let putBtns = document.getElementsByClassName('putBtn');
     let putBtn = putBtns[putBtns.length - 1];
     putBtn.addEventListener('click', formatProductModalWindow);
+    let reviews = document.getElementsByClassName('review');
+    let review = reviews[reviews.length - 1];
+    review.addEventListener('click', reviewHandler);
     saveProductForm.addEventListener('submit', putInBasketBtnHandler);
 }
+
+function feedbackHandler(e){
+    e.preventDefault();
+    feedbackSendForm.getElementsByClassName('hiddenProductName')[0].value = e.target
+        .parentElement.parentElement.getElementsByClassName('card-title')[0].innerText;
+}
+
 
 function previousPageEventHandler(e){
     e.preventDefault();
@@ -78,7 +107,6 @@ function previousPageEventHandler(e){
     if(page !== '0') {
         const nextPage = parseInt(page) - 1;
         productArea.className = 'productArea page' + nextPage;
-        console.log(productArea.className);
         const submitButton = searchingForm.querySelector('[type="submit"]');
         submitButton.click();
     }
@@ -116,6 +144,29 @@ function createProductElement(product){
         '  </div>\n' +
         '</div>'
 }
+
+function createProductElementWithFeedback(product){
+    return '<div class="card productElement" style="width: 21rem;" id="product' + product.id + '">\n' +
+        '  <img class="card-img-top productCardImage" src="../static/images/' + product.image + '" alt="Card image cap">\n' +
+        '  <div class="card-body productCardBody">\n' +
+        '    <h5 class="card-title">' + product.name + '</h5>\n' +
+        '    <p class="card-text">' + product.description + '</p>\n' +
+        '    <div class="cardBtns">' +
+        '       <a href="#" class="btn btn-primary review cardBtn">Reviews</a>\n' +
+        '       <a href="#" class="btn btn-primary productInfo cardBtn">More info</a>\n' +
+        '       <button type="button" class="btn btn-primary putBtn cardBtn" data-bs-toggle="modal" data-bs-target="#productQuantityModal" ' +
+        '           id="modalBtn">\n' +
+        '           Put in the basket\n' +
+        '       </button>\n' +
+        '       <button type="button" class="btn btn-primary feedbackBtn cardBtn" id="feedbackBtn" data-bs-toggle="modal" data-bs-target="#feedbackModal" ' +
+        '           id="feedbackModalBtn">' +
+        '           Feedback' +
+        '       </button>\n' +
+        '    </div>' +
+        '  </div>\n' +
+        '</div>'
+}
+
 
 function createNextPageBtn(){
     return '<button class="btn btn-primary nextPageBtn" id="nextPageBtn">Next page</button>';
@@ -274,5 +325,26 @@ function formatProductModalWindow(e){
     })
 }
 
-
+feedbackSendForm.addEventListener('submit', feedbackSendFormHandler)
+function feedbackSendFormHandler(e){
+    e.preventDefault();
+    const form = e.target;
+    const data = new FormData(form);
+    console.log(data.get('productName'));
+    console.log(data.get('rating'));
+    console.log(data.get('text'));
+    axios({
+        method: 'post',
+        url: '/products/reviews',
+        headers: {
+            'X-CSRF-TOKEN': csrfToken,
+            'Content-Type': 'application/json'
+        },
+        data: data
+    }).then(function (response){
+        console.log(response);
+    }).catch(function (error){
+        console.log(error);
+    })
+}
 

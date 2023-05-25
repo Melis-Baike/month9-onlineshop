@@ -1,8 +1,8 @@
 const csrfToken = document.querySelector('meta[name="_csrf_token"]').getAttribute('content');
 const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
 
-document.addEventListener("DOMContentLoaded", function() {
-    const removeButtons = document.querySelectorAll(".remove");
+document.addEventListener('DOMContentLoaded', function() {
+    const removeButtons = document.querySelectorAll('.remove');
     removeButtons.forEach(function (button){
         button.addEventListener('click', function (e){
             e.preventDefault();
@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", function() {
         })
     })
 
-    const changeQuantityButtons = document.querySelectorAll(".changeQuantityForm");
+    const changeQuantityButtons = document.querySelectorAll('.changeQuantityForm');
     changeQuantityButtons.forEach(function (form){
         form.addEventListener('submit', function (e){
             e.preventDefault();
@@ -61,23 +61,25 @@ document.addEventListener("DOMContentLoaded", function() {
         })
     })
 
-    const checkoutBtn = document.getElementById('checkout');
-    checkoutBtn.addEventListener('click', function (e){
-        e.preventDefault();
-        const card = e.target.parentElement.parentElement;
-        const basketProductId = card.className.substring(16);
-        axios({
-            method: 'post',
-            url: '/orders/' + basketProductId,
-            headers: {
-                'X-CSRF-TOKEN': csrfToken,
-            },
-            data: {}
-        }).then(function (response){
-            console.log(response);
-            card.remove();
-        }).catch(function (error){
-            console.log(error);
+    const checkoutButtons = document.querySelectorAll('.checkout');
+    checkoutButtons.forEach(function (checkoutBtn){
+        checkoutBtn.addEventListener('click', function (e){
+            e.preventDefault();
+            const card = e.target.parentElement.parentElement;
+            const basketProductId = card.className.substring(16);
+            axios({
+                method: 'post',
+                url: '/orders/' + basketProductId,
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken,
+                },
+                data: {}
+            }).then(function (response){
+                console.log(response);
+                card.remove();
+            }).catch(function (error){
+                console.log(error);
+            })
         })
     })
 })
