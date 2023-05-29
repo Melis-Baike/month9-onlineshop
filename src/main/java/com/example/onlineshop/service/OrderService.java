@@ -1,5 +1,6 @@
 package com.example.onlineshop.service;
 
+import com.example.onlineshop.DTO.BasketProductDTO;
 import com.example.onlineshop.DTO.CustomOrderDTO;
 import com.example.onlineshop.DTO.OrderDTO;
 import com.example.onlineshop.DTO.UserDTO;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -41,6 +43,9 @@ public class OrderService {
                 .build();
         orderRepository.save(order);
         basketProductRepository.delete(basketProduct);
+        List<BasketProductDTO> list = (List<BasketProductDTO>) session.getAttribute("basket");
+        list.removeIf(e -> Objects.equals(e.getId(), basketProductId));
+        session.setAttribute("basket", list);
         return OrderDTO.from(order);
     }
 

@@ -38,11 +38,6 @@ public class ProductService {
         return Optional.of(page.map(ProductDTO::from));
     }
 
-    public ProductDTO getProductInfoId(Long id){
-        Product product = productRepository.findById(id).get();
-        return ProductDTO.from(product);
-    }
-
     public ProductDTO getProductInfoByName(String productName){
         Product product = productRepository.findByName(productName).get();
         return ProductDTO.from(product);
