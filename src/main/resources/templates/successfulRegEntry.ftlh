@@ -1,9 +1,10 @@
+<#import "/spring.ftl" as spring>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
-    <title>Successful entry</title>
+    <title><@spring.message "successfulRegistration"/></title>
     <link rel="stylesheet" href="/static/frontend/css/util.css">
 </head>
 
@@ -12,15 +13,15 @@
     <form action="/users/login" method="get">
         <fieldset>
             <div class="legend">
-                <p>Welcome!</p>
+                <p><@spring.message "welcome"/>!</p>
                 <img src="/static/utilsImage/confirmed.png" alt="confirmed" style="display:block; width: 200px; height: 200px;">
             </div>
-            <div class="center">Registration completed successfully</div>
+            <div class="center"><@spring.message "registrationCompletedSuccessfully"/></div>
             <div class="hr-line">
-                <span class="details">Your registration request has been confirmed</span>
+                <span class="details"><@spring.message "yourRegistrationRequestHasBeenConfirmed"/></span>
             </div>
             <div class="form-element">
-                <button class="register-button" type="submit">Log in</button>
+                <button class="register-button" type="submit"><@spring.message "login"/></button>
             </div>
         </fieldset>
     </form>

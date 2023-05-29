@@ -1,9 +1,10 @@
+<#import "/spring.ftl" as spring>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
-    <title>Unsuccessful entry</title>
+    <title><@spring.message "unsuccessfulAuthorization"/></title>
     <link rel="stylesheet" href="/static/frontend/css/util.css">
 </head>
 
@@ -12,15 +13,15 @@
     <form action="/users/login" method="get">
         <fieldset>
             <div class="legend">
-                <p>Something went wrong!</p>
+                <p><@spring.message "somethingWentWrong"/>!</p>
                 <img src="/static/utilsImage/rejected.png" alt="rejected" style="display:block; width: 200px; height: 200px;">
             </div>
-            <div class="center">Authorization failed</div>
+            <div class="center"><@spring.message "authorizationFailed"/></div>
             <div class="hr-line">
-                <span class="details">The user does not exist</span>
+                <span class="details"><@spring.message "theUserDoesNotExist"/></span>
             </div>
             <div class="form-element">
-                <button class="register-button" type="submit">Log in</button>
+                <button class="register-button" type="submit"><@spring.message "login"/></button>
             </div>
         </fieldset>
     </form>

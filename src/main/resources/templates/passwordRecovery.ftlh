@@ -1,3 +1,4 @@
+<#import "/spring.ftl" as spring>
 <!doctype html>
 <html lang="en">
 <head>
@@ -7,7 +8,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <title>Password Recovery</title>
+    <title><@spring.message "passwordRecovery"/></title>
     <link rel="stylesheet" href="../static/frontend/css/formInfo.css">
 </head>
 <body>
@@ -19,12 +20,12 @@
                     <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}" value="${(_csrf.token)!'csrf-token'}" />
                 </#if>
                 <input name="email" type="hidden" value="${email}">
-                <input id="pass" name="newPassword" type="password" placeholder="New password" required/>
-                <input id="passConfirm" name="confirmPassword" type="password" placeholder="Confirm password" required/>
-                <button type="submit">Change Password</button>
+                <input id="pass" name="newPassword" type="password" placeholder="<@spring.message "newPassword"/>" required/>
+                <input id="passConfirm" name="confirmPassword" type="password" placeholder="<@spring.message "confirmPassword"/>" required/>
+                <button type="submit"><@spring.message "changePassword"/></button>
             </form>
             <div class="hr-line" id="error" style="display: none">
-                <span class="details">Password mismatch</span>
+                <span class="details"><@spring.message "passwordMismatch"/></span>
             </div>
         </div>
     </div>

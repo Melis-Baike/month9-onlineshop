@@ -1,9 +1,10 @@
+<#import "/spring.ftl" as spring>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
-    <title>Successful password recovery</title>
+    <title><@spring.message "successfulPasswordRecovery"/></title>
     <link rel="stylesheet" href="/static/frontend/css/util.css">
 </head>
 
@@ -12,15 +13,15 @@
     <form action="/users/login" method="get">
         <fieldset>
             <div class="legend">
-                <p>Welcome!</p>
+                <p><@spring.message "welcome"/>!</p>
                 <img src="/static/utilsImage/confirmed.png" alt="confirmed" style="display:block; width: 200px; height: 200px;">
             </div>
-            <div class="center">Success</div>
+            <div class="center"><@spring.message "success"/></div>
             <div class="hr-line">
-                <span class="details">Password has been changed</span>
+                <span class="details"><@spring.message "passwordHasBeenChanged"/></span>
             </div>
             <div class="form-element">
-                <button class="register-button" type="submit">Log in</button>
+                <button class="register-button" type="submit"><@spring.message "login"/></button>
             </div>
         </fieldset>
     </form>

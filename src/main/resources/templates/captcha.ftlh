@@ -1,3 +1,4 @@
+<#import "/spring.ftl" as spring>
 <!doctype html>
 <html lang="en">
 <head>
@@ -17,7 +18,7 @@
         </#if>
         <input type="text" placeholder="${captcha}" readonly value="${captcha}" name="captcha">
         <input type="text" name="text" placeholder="Captcha" required>
-        <button type="submit">Submit</button>
+        <button type="submit"><@spring.message "submit"/></button>
       </form>
     </div>
   </div>
