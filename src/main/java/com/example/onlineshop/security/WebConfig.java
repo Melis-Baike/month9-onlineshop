@@ -1,9 +1,16 @@
 package com.example.onlineshop.security;
 
+import org.springframework.context.MessageSource;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.http.CacheControl;
+import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.*;
+import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
+import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
+
 
 @Configuration
 @EnableWebMvc
@@ -37,5 +44,29 @@ public class WebConfig implements WebMvcConfigurer {
         resolver.setCache(true);
         resolver.setContentType("text/html; charset=UTF-8");
         registry.viewResolver(resolver);
+    }
+
+    @Bean
+    public LocaleResolver localeResolver(){
+        return new SessionLocaleResolver();
+    }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry){
+        registry.addInterceptor(localeChangeInterceptor());
+    }
+
+    private LocaleChangeInterceptor localeChangeInterceptor(){
+        var loc = new LocaleChangeInterceptor();
+        loc.setParamName("lang");
+        return loc;
+    }
+
+    @Bean
+    public MessageSource messageSource() {
+        ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
+        messageSource.setBasename("i18n/messages");
+        messageSource.setDefaultEncoding("UTF-8");
+        return messageSource;
     }
 }
