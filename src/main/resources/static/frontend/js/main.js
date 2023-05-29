@@ -7,7 +7,6 @@ const productQuantityModal = document.getElementById('productQuantityModal');
 const saveProductForm = document.getElementById('saveProductForm');
 const feedbackSendForm = document.getElementById('feedbackSendForm');
 const csrfToken = document.querySelector('meta[name="_csrf_token"]').getAttribute('content');
-const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
 
 searchingForm.addEventListener('submit', searchFormHandler)
 function searchFormHandler(e){
@@ -117,7 +116,6 @@ function nextPageEventHandler(e){
     const page = productArea.className.substring(16);
     const nextPage = parseInt(page) + 1;
     productArea.className = 'productArea page' + nextPage;
-    console.log(productArea.className);
     const submitButton = searchingForm.querySelector('[type="submit"]');
     submitButton.click();
 }
@@ -265,7 +263,6 @@ main.addEventListener('click', mainHandler);
 function mainHandler(e){
     e.preventDefault();
     if(page.style.display === 'none') {
-        console.log('test info')
         document.body.getElementsByClassName('more-info')[0].remove();
         page.style.display = 'block';
     }
@@ -297,7 +294,10 @@ function putInBasketBtnHandler(e){
         data: order
     }).then(function(response) {
             console.log(response.data);
-            const quantity = form.getElementsByClassName('card-text')[0].innerText.substring(10) - data.get('quantity');
+            const text = form.getElementsByClassName('card-text')[0].innerText;
+            const parts = text.split(":");
+            const value = parts[1].trim();
+            const quantity = value - data.get('quantity');
             form.getElementsByClassName('card-text')[0].innerText = 'Quantity: ' + quantity;
         })
         .catch(function(error) {
@@ -330,9 +330,6 @@ function feedbackSendFormHandler(e){
     e.preventDefault();
     const form = e.target;
     const data = new FormData(form);
-    console.log(data.get('productName'));
-    console.log(data.get('rating'));
-    console.log(data.get('text'));
     axios({
         method: 'post',
         url: '/products/reviews',

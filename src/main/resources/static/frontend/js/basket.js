@@ -1,5 +1,4 @@
 const csrfToken = document.querySelector('meta[name="_csrf_token"]').getAttribute('content');
-const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
 
 document.addEventListener('DOMContentLoaded', function() {
     const removeButtons = document.querySelectorAll('.remove');
@@ -8,7 +7,6 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
             const form = e.target.parentElement.parentElement;
             const basketProductId = form.className.substring(16);
-            console.log(basketProductId);
             axios({
                 method: 'post',
                 url: '/basket/' + basketProductId,
@@ -36,11 +34,13 @@ document.addEventListener('DOMContentLoaded', function() {
             const data = new FormData(form);
             const basketProductId = parentElem.parentElement.className.substring(16);
             const quantity = data.get('quantity');
-            const previousQuantity = parentElem.getElementsByClassName('card-text')[0].innerText.substring(10);
+            const previousQuantity = parentElem.getElementsByClassName('card-text')[0].innerText;
+            const parts = previousQuantity.split(":");
+            const value = parts[1].trim();
             const changeProductQuantityDTO = {
                 productName: parentElem.getElementsByClassName('card-title')[0].innerText,
                 basketProductId: basketProductId,
-                previousQuantity: previousQuantity,
+                previousQuantity: value,
                 currentQuantity: quantity
             };
             axios({
