@@ -35,8 +35,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(final HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/users/auth").fullyAuthenticated()
-                .antMatchers("/").fullyAuthenticated()
+                .antMatchers("/users/auth").hasAnyRole("GUEST", "USER", "ADMIN")
+                .antMatchers("/").hasAnyRole("GUEST", "USER", "ADMIN")
                 .antMatchers("/users/*").permitAll()
                 .antMatchers("/users/*/*").permitAll()
                 .antMatchers("/guests").permitAll()
@@ -48,7 +48,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/static/**/**").permitAll()
                 .antMatchers( "/users/registration").permitAll()
                 .antMatchers("/captcha/**").permitAll()
-                .anyRequest().fullyAuthenticated();
+                .anyRequest().authenticated();
 
         http.formLogin()
                 .loginPage("/users/login")
@@ -67,8 +67,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.cors().configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues());
         http.csrf().csrfTokenRepository(new HttpSessionCsrfTokenRepository())
                 .requireCsrfProtectionMatcher(new AntPathRequestMatcher("/secured/*"));
-//        http.sessionManagement()
-//                .sessionCreationPolicy(SessionCreationPolicy.ALWAYS);
     }
 
     @Bean
@@ -107,6 +105,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
+
+
 
     @Bean
     public static PasswordEncoder passwordEncoder() {
