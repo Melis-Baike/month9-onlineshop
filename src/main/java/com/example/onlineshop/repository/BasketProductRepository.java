@@ -16,7 +16,6 @@ import java.util.Optional;
 @Repository
 public interface BasketProductRepository extends JpaRepository<BasketProduct, Long> {
     Optional<List<BasketProduct>> findAllByBasket(Basket basket);
-    void deleteAllByBasket(Basket basket);
     @Modifying
     @Transactional
     @Query(value = "UPDATE BasketProduct d SET d.productQuantity = :quantity WHERE d.id = :id")
